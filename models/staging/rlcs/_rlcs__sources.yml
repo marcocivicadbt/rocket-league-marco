@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: rlcs
+    database: RL_DEV_BRONZE_DB
+    schema: RLCS
+    tables:
+      - name: player_stats

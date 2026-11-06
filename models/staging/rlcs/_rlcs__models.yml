@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: stg_rlcs__player_stats
+    description: "Un jugador en una partida (RLCS). Copia limpia de bronze: solo renombra y castea. No filtra ni deduplica."
+    columns:
+      - name: replay_id
+        description: "Identificador de la partida en ballchasing"
+        data_tests:
+          - not_null
+      - name: team_color
+        description: "Lado del equipo en la partida"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['blue', 'orange']
+      - name: player_platform
+        description: "Plataforma del jugador (steam, epic, ps4...)"
+        data_tests:
+          - not_null
+      - name: player_platform_id
+        description: "Identificador del jugador dentro de su plataforma"
+        data_tests:
+          - not_null
+      - name: match_date
+        description: "Fecha de la partida (columna DATE original; sin zona horaria fiable)"
+        data_tests:
+          - not_null
+      - name: duration
+        description: "Duración de la partida en segundos"
+        data_tests:
+          - not_null
+      - name: team_name
+        description: "Nombre del equipo en mayúsculas y sin espacios sobrantes"
+      - name: car_id
+        description: "Identificador del coche. Llegaba como 23.0; convertido a entero"
+      - name: overtime_seconds
+        description: "Segundos de prórroga (vacío si no hubo). Convertido a entero"
+      - name: pos_goals_against_while_last_defender
+        description: "Goles encajados siendo último defensor. Vacío = 0 (cuadra con los goles del rival en el 99,41 %)"
