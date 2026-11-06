@@ -1,0 +1,26 @@
+version: 2
+
+seeds:
+  - name: group_types
+    description: "Los 7 tipos de nivel del árbol de competición. Definidos a mano: no vienen en los datos."
+    columns:
+      - name: group_type_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: map_names
+    description: "Traducción de código de mapa a nombre real. El dataset solo trae el código."
+    columns:
+      - name: map_code
+        data_tests:
+          - unique
+          - not_null
+
+  - name: duplicate_replays
+    description: "Partidas subidas dos veces a ballchasing, detectadas en el análisis. Se excluyen en silver."
+    columns:
+      - name: replay_id
+        data_tests:
+          - unique
+          - not_null
