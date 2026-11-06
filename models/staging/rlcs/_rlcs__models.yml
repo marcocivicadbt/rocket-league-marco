@@ -39,3 +39,10 @@ models:
         description: "Segundos de prórroga (vacío si no hubo). Convertido a entero"
       - name: pos_goals_against_while_last_defender
         description: "Goles encajados siendo último defensor. Vacío = 0 (cuadra con los goles del rival en el 99,41 %)"
+      - name: map_code
+        description: "Código interno del mapa"
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('map_names')
+                field: map_code
