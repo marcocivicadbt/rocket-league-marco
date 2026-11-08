@@ -8,6 +8,55 @@ models:
         description: "Identificador de la partida en ballchasing"
         data_tests:
           - not_null
+      - name: title
+        description: "Título del replay tal como se subió (suele incluir equipos y número de partida)"
+      - name: map_code
+        description: "Código interno del mapa. Su nombre real está en la seed map_names"
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('map_names')
+                field: map_code
+      - name: match_type
+        description: "Tipo de partida (Private, Online…)"
+      - name: playlist_id
+        description: "Lista de juego de la partida (private, ranked…)"
+      - name: team_size
+        description: "Jugadores por equipo (3 = 3v3)"
+      - name: duration
+        description: "Duración de la partida en segundos"
+        data_tests:
+          - not_null
+      - name: overtime
+        description: "Indica si la partida llegó a prórroga"
+      - name: overtime_seconds
+        description: "Segundos de prórroga (vacío si no hubo). Llegaba como 23.0; convertido a entero"
+      - name: season
+        description: "Temporada del juego en la que se jugó la partida"
+      - name: season_type
+        description: "Tipo de temporada del juego (legacy o free2play)"
+      - name: match_date
+        description: "Fecha y hora de la partida (columna DATE original; sin zona horaria fiable)"
+        data_tests:
+          - not_null
+      - name: date_has_timezone
+        description: "Indica si la fecha original traía zona horaria"
+      - name: date_parsed
+        description: "Fecha interpretada por ballchasing. No se usa: falla en un 6 % de las filas"
+      - name: visibility
+        description: "Visibilidad del replay en ballchasing (public, unlisted…)"
+      - name: root_group_id
+        description: "Identificador del grupo raíz en ballchasing (la temporada RLCS)"
+      - name: root_group_name
+        description: "Nombre del grupo raíz (por ejemplo, RLCS 22-23)"
+      - name: leaf_group_id
+        description: "Identificador del grupo hoja en ballchasing (la serie)"
+      - name: leaf_group_name
+        description: "Nombre del grupo hoja (por ejemplo, NVR vs NTM)"
+      - name: group_path
+        description: "Ruta completa de nombres del árbol de competición, separada por ' / '"
+      - name: group_id_path
+        description: "Ruta completa de identificadores del árbol de competición, separada por ' / '"
       - name: team_color
         description: "Lado del equipo en la partida"
         data_tests:
@@ -15,34 +64,209 @@ models:
           - accepted_values:
               arguments:
                 values: ['blue', 'orange']
+      - name: team_name
+        description: "Nombre del equipo en mayúsculas y sin espacios sobrantes"
+      - name: team_goals
+        description: "Goles marcados por el equipo en la partida"
+      - name: player_name
+        description: "Nombre del jugador en esta partida (puede cambiar entre partidas)"
       - name: player_platform
-        description: "Plataforma del jugador (steam, epic, ps4...)"
+        description: "Plataforma del jugador (steam, epic, ps4…)"
         data_tests:
           - not_null
       - name: player_platform_id
         description: "Identificador del jugador dentro de su plataforma"
         data_tests:
           - not_null
-      - name: match_date
-        description: "Fecha de la partida (columna DATE original; sin zona horaria fiable)"
-        data_tests:
-          - not_null
-      - name: duration
-        description: "Duración de la partida en segundos"
-        data_tests:
-          - not_null
-      - name: team_name
-        description: "Nombre del equipo en mayúsculas y sin espacios sobrantes"
       - name: car_id
         description: "Identificador del coche. Llegaba como 23.0; convertido a entero"
-      - name: overtime_seconds
-        description: "Segundos de prórroga (vacío si no hubo). Convertido a entero"
+      - name: car_name
+        description: "Nombre del coche (Octane, Fennec…)"
+      - name: start_time
+        description: "Segundo de la partida en que el jugador empezó a jugar"
+      - name: end_time
+        description: "Segundo de la partida en que el jugador dejó de jugar"
+      - name: steering_sensitivity
+        description: "Sensibilidad de dirección configurada por el jugador. No se usa en los casos de uso"
+      - name: camera_fov
+        description: "Campo de visión de la cámara. No se usa en los casos de uso"
+      - name: camera_height
+        description: "Altura de la cámara. No se usa en los casos de uso"
+      - name: camera_pitch
+        description: "Inclinación de la cámara. No se usa en los casos de uso"
+      - name: camera_distance
+        description: "Distancia de la cámara al coche. No se usa en los casos de uso"
+      - name: camera_stiffness
+        description: "Rigidez de la cámara. No se usa en los casos de uso"
+      - name: camera_swivel_speed
+        description: "Velocidad de giro de la cámara. No se usa en los casos de uso"
+      - name: camera_transition_speed
+        description: "Velocidad de transición de la cámara. No se usa en los casos de uso"
+      - name: core_shots
+        description: "Tiros a puerta del jugador"
+      - name: core_shots_against
+        description: "Tiros recibidos por el equipo del jugador"
+      - name: core_goals
+        description: "Goles marcados por el jugador"
+      - name: core_goals_against
+        description: "Goles encajados por el equipo del jugador"
+      - name: core_saves
+        description: "Paradas del jugador"
+      - name: core_assists
+        description: "Asistencias del jugador"
+      - name: core_score
+        description: "Puntuación del jugador en la partida"
+      - name: core_mvp
+        description: "Indica si el jugador fue el MVP de la partida"
+      - name: core_shooting_percentage
+        description: "Porcentaje de tiros que acabaron en gol"
+      - name: boost_bpm
+        description: "Boost consumido por minuto"
+      - name: boost_bcpm
+        description: "Boost recogido por minuto"
+      - name: boost_avg_amount
+        description: "Cantidad media de boost que tenía el jugador (0-100)"
+      - name: boost_amount_collected
+        description: "Cantidad total de boost recogido"
+      - name: boost_amount_stolen
+        description: "Cantidad de boost recogido en el campo rival"
+      - name: boost_amount_collected_big
+        description: "Boost recogido en pads grandes"
+      - name: boost_amount_stolen_big
+        description: "Boost recogido en pads grandes del campo rival"
+      - name: boost_amount_collected_small
+        description: "Boost recogido en pads pequeños"
+      - name: boost_amount_stolen_small
+        description: "Boost recogido en pads pequeños del campo rival"
+      - name: boost_count_collected_big
+        description: "Número de pads grandes recogidos"
+      - name: boost_count_stolen_big
+        description: "Número de pads grandes recogidos en el campo rival"
+      - name: boost_count_collected_small
+        description: "Número de pads pequeños recogidos"
+      - name: boost_count_stolen_small
+        description: "Número de pads pequeños recogidos en el campo rival"
+      - name: boost_amount_overfill
+        description: "Boost desperdiciado al recoger pads con el depósito casi lleno"
+      - name: boost_amount_overfill_stolen
+        description: "Boost desperdiciado al recoger pads del campo rival con el depósito casi lleno"
+      - name: boost_amount_used_while_supersonic
+        description: "Boost gastado yendo ya a velocidad supersónica"
+      - name: boost_time_zero_boost
+        description: "Segundos con el depósito de boost vacío"
+      - name: boost_percent_zero_boost
+        description: "Porcentaje del tiempo con el depósito de boost vacío"
+      - name: boost_time_full_boost
+        description: "Segundos con el depósito de boost lleno"
+      - name: boost_percent_full_boost
+        description: "Porcentaje del tiempo con el depósito de boost lleno"
+      - name: boost_time_boost_0_25
+        description: "Segundos con entre 0 y 25 de boost"
+      - name: boost_time_boost_25_50
+        description: "Segundos con entre 25 y 50 de boost"
+      - name: boost_time_boost_50_75
+        description: "Segundos con entre 50 y 75 de boost"
+      - name: boost_time_boost_75_100
+        description: "Segundos con entre 75 y 100 de boost"
+      - name: boost_percent_boost_0_25
+        description: "Porcentaje del tiempo con entre 0 y 25 de boost"
+      - name: boost_percent_boost_25_50
+        description: "Porcentaje del tiempo con entre 25 y 50 de boost"
+      - name: boost_percent_boost_50_75
+        description: "Porcentaje del tiempo con entre 50 y 75 de boost"
+      - name: boost_percent_boost_75_100
+        description: "Porcentaje del tiempo con entre 75 y 100 de boost"
+      - name: mv_avg_speed
+        description: "Velocidad media del jugador (unidades del juego)"
+      - name: mv_total_distance
+        description: "Distancia total recorrida (unidades del juego)"
+      - name: mv_time_supersonic_speed
+        description: "Segundos a velocidad supersónica"
+      - name: mv_time_boost_speed
+        description: "Segundos a velocidad de boost"
+      - name: mv_time_slow_speed
+        description: "Segundos a velocidad lenta"
+      - name: mv_time_ground
+        description: "Segundos en el suelo"
+      - name: mv_time_low_air
+        description: "Segundos en el aire a poca altura"
+      - name: mv_time_high_air
+        description: "Segundos en el aire a mucha altura"
+      - name: mv_time_powerslide
+        description: "Segundos derrapando (powerslide)"
+      - name: mv_count_powerslide
+        description: "Número de derrapes (powerslide)"
+      - name: mv_avg_powerslide_duration
+        description: "Duración media de cada derrape en segundos"
+      - name: mv_avg_speed_percentage
+        description: "Velocidad media como porcentaje de la velocidad máxima"
+      - name: mv_percent_slow_speed
+        description: "Porcentaje del tiempo a velocidad lenta"
+      - name: mv_percent_boost_speed
+        description: "Porcentaje del tiempo a velocidad de boost"
+      - name: mv_percent_supersonic_speed
+        description: "Porcentaje del tiempo a velocidad supersónica"
+      - name: mv_percent_ground
+        description: "Porcentaje del tiempo en el suelo"
+      - name: mv_percent_low_air
+        description: "Porcentaje del tiempo en el aire a poca altura"
+      - name: mv_percent_high_air
+        description: "Porcentaje del tiempo en el aire a mucha altura"
+      - name: pos_avg_distance_to_ball
+        description: "Distancia media a la pelota"
+      - name: pos_avg_distance_to_ball_possession
+        description: "Distancia media a la pelota cuando su equipo tiene la posesión"
+      - name: pos_avg_distance_to_ball_no_possession
+        description: "Distancia media a la pelota cuando el rival tiene la posesión"
+      - name: pos_avg_distance_to_mates
+        description: "Distancia media a sus compañeros de equipo"
+      - name: pos_time_defensive_third
+        description: "Segundos en el tercio defensivo del campo"
+      - name: pos_time_neutral_third
+        description: "Segundos en el tercio central del campo"
+      - name: pos_time_offensive_third
+        description: "Segundos en el tercio ofensivo del campo"
+      - name: pos_time_defensive_half
+        description: "Segundos en la mitad defensiva del campo"
+      - name: pos_time_offensive_half
+        description: "Segundos en la mitad ofensiva del campo"
+      - name: pos_time_behind_ball
+        description: "Segundos por detrás de la pelota (entre la pelota y su portería)"
+      - name: pos_time_infront_ball
+        description: "Segundos por delante de la pelota"
+      - name: pos_time_most_back
+        description: "Segundos siendo el jugador más retrasado de su equipo"
+      - name: pos_time_most_forward
+        description: "Segundos siendo el jugador más adelantado de su equipo"
       - name: pos_goals_against_while_last_defender
-        description: "Goles encajados siendo último defensor. Vacío = 0 (cuadra con los goles del rival en el 99,41 %)"
-      - name: map_code
-        description: "Código interno del mapa"
-        data_tests:
-          - relationships:
-              arguments:
-                to: ref('map_names')
-                field: map_code
+        description: "Goles encajados siendo último defensor. Vacío = 0 (cuadra con los goles del rival en la mayoria de los casos)"
+      - name: pos_time_closest_to_ball
+        description: "Segundos siendo el jugador de su equipo más cercano a la pelota"
+      - name: pos_time_farthest_from_ball
+        description: "Segundos siendo el jugador de su equipo más lejano a la pelota"
+      - name: pos_percent_defensive_third
+        description: "Porcentaje del tiempo en el tercio defensivo"
+      - name: pos_percent_offensive_third
+        description: "Porcentaje del tiempo en el tercio ofensivo"
+      - name: pos_percent_neutral_third
+        description: "Porcentaje del tiempo en el tercio central"
+      - name: pos_percent_defensive_half
+        description: "Porcentaje del tiempo en la mitad defensiva"
+      - name: pos_percent_offensive_half
+        description: "Porcentaje del tiempo en la mitad ofensiva"
+      - name: pos_percent_behind_ball
+        description: "Porcentaje del tiempo por detrás de la pelota"
+      - name: pos_percent_infront_ball
+        description: "Porcentaje del tiempo por delante de la pelota"
+      - name: pos_percent_most_back
+        description: "Porcentaje del tiempo siendo el más retrasado de su equipo"
+      - name: pos_percent_most_forward
+        description: "Porcentaje del tiempo siendo el más adelantado de su equipo"
+      - name: pos_percent_closest_to_ball
+        description: "Porcentaje del tiempo siendo el más cercano a la pelota de su equipo"
+      - name: pos_percent_farthest_from_ball
+        description: "Porcentaje del tiempo siendo el más lejano a la pelota de su equipo"
+      - name: demo_inflicted
+        description: "Demoliciones que hizo el jugador"
+      - name: demo_taken
+        description: "Demoliciones que sufrió el jugador"
