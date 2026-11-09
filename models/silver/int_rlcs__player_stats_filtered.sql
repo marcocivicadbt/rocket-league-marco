@@ -28,7 +28,15 @@ partidas_3v3 as (
 
 final as (
 
-    select stg.*
+    select
+        stg.* exclude (playlist_id),
+        coalesce(
+            stg.playlist_id,
+            case stg.match_type
+                when 'Private' then 'private'
+                when 'Lan'     then 'local-lobby'
+            end
+        ) as playlist_id
     from stg
     inner join partidas_3v3
         on stg.replay_id = partidas_3v3.replay_id
