@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: slv_rlcs__group_types
+    description: "Tipos de nivel del árbol de competición (season, split, tournament...). Viene de la seed group_types."
+    columns:
+      - name: group_type_id
+        description: "Identificador del tipo de nivel"
+        data_tests:
+          - unique
+          - not_null
+      - name: group_type_name
+        description: "Nombre del tipo de nivel"
+        data_tests:
+          - not_null
+
+  - name: slv_rlcs__maps
+    description: "Mapas en los que se ha jugado alguna partida, con su nombre real."
+    columns:
+      - name: map_code
+        description: "Código interno del mapa"
+        data_tests:
+          - unique
+          - not_null
+      - name: map_name
+        description: "Nombre real del mapa (de la seed map_names)"
+        data_tests:
+          - not_null
+
+  - name: slv_rlcs__cars
+    description: "Coches usados por los jugadores."
+    columns:
+      - name: car_id
+        description: "Identificador del coche"
+        data_tests:
+          - unique
+          - not_null
+      - name: car_name
+        description: "Nombre del coche (Octane, Fennec...)"
