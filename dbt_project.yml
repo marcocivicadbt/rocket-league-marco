@@ -40,3 +40,6 @@ models:
     staging:
       +database: RL_DEV_SILVER_DB
       +materialized: view
+    silver:
+      +database: RL_DEV_SILVER_DB
+      +materialized: table
