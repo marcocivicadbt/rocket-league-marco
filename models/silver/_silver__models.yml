@@ -72,6 +72,7 @@ models:
         description: "Nombre del equipo que participa en la rlcs."
         data_tests:
           - not_null
+
   - name: slv_rlcs__players
     description: "Jugadores de la rlcs."
     columns:
@@ -91,4 +92,31 @@ models:
       - name: player_name
         description: "Nombre más reciente del jugador (SCD tipo 1: si cambió de nombre, se guarda el último que usó), 2 jugadores tienen partidas sin nombre; se usa el último nombre conocido."
         data_tests:
-          - not_null 
+          - not_null
+
+  - name: slv_rlcs__match_teams
+    description: "Equipos por partido, tabla puente de equipos y partidos"
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: ['match_id', 'team_color']
+    columns:
+      - name: match_id
+        description: "Id del partido, es replay_id renombrado"
+        data_tests:
+          - not_null
+      - name: team_color
+        description: "Color del equipo"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['blue', 'orange']
+      - name: team_id
+        description: "Id del equipo, FK a slv_rlcs__teams"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_rlcs__teams')
+                field: team_id
