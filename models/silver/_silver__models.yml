@@ -120,3 +120,56 @@ models:
               arguments:
                 to: ref('slv_rlcs__teams')
                 field: team_id
+
+  - name: slv_rlcs__matches
+    description: "Una fila por partida (solo partidas 3v3 válidas del int_). Datos generales de la partida y sus claves foráneas."
+    columns:
+      - name: match_id
+        description: "Identificador de la partida (replay_id de ballchasing renombrado). PK"
+        data_tests:
+          - unique
+          - not_null
+      - name: group_id
+        description: "Serie a la que pertenece la partida (leaf_group_id renombrado). FK a slv_rlcs__competition_groups"
+        data_tests:
+          - not_null
+      - name: playlist_id
+        description: "Lista de juego (private = online, local-lobby = LAN). FK a slv_rlcs__playlists"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_rlcs__playlists')
+                field: playlist_id
+      - name: season
+        description: "Temporada del juego. FK a slv_rlcs__game_seasons"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_rlcs__game_seasons')
+                field: season
+      - name: map_code
+        description: "Código del mapa. FK a slv_rlcs__maps"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_rlcs__maps')
+                field: map_code
+      - name: title
+        description: "Título del replay tal como se subió (suele incluir equipos y número de partida)"
+      - name: match_date
+        description: "Fecha y hora de la partida (sin zona horaria fiable)"
+        data_tests:
+          - not_null
+      - name: date_has_timezone
+        description: "Indica si la fecha original traía zona horaria"
+      - name: duration
+        description: "Duración de la partida en segundos"
+        data_tests:
+          - not_null
+      - name: overtime_seconds
+        description: "Segundos de prórroga. Vacío si la partida no llegó a la prórroga"
+      - name: visibility
+        description: "Visibilidad del replay en ballchasing (public, unlisted...)"
