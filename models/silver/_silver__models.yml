@@ -198,3 +198,171 @@ models:
         description: "Verdadero si la partida no incumple ninguna regla"
         data_tests:
           - not_null
+  
+  - name: slv_rlcs__match_players
+    description: >
+      Un jugador en una partida (entidad asociativa entre partidas y jugadores).
+      Guarda lo que hizo cada jugador en cada partida. Solo estadísticas no derivables:
+      los porcentajes y valores por minuto se calculan en gold. Si un jugador se reconectó
+      (2 filas en la misma partida), se queda el tramo más largo.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - match_id
+              - player_id
+    columns:
+      - name: match_id
+        description: "Identificador de la partida (replay_id de ballchasing)"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_rlcs__matches')
+                field: match_id
+      - name: player_id
+        description: "Clave del jugador (hash de plataforma + id de plataforma)"
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_rlcs__players')
+                field: player_id
+      - name: team_color
+        description: "Lado del equipo del jugador en la partida"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['blue', 'orange']
+      - name: car_id
+        description: "Coche usado. Vacío en 2 filas sin dato de coche"
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('slv_rlcs__cars')
+                field: car_id
+      - name: start_time
+        description: "Segundo de la partida en que el jugador empezó a jugar"
+      - name: end_time
+        description: "Segundo de la partida en que el jugador dejó de jugar"
+
+      # core
+      - name: core_shots
+        description: "Tiros a puerta del jugador"
+      - name: core_goals
+        description: "Goles marcados por el jugador"
+      - name: core_saves
+        description: "Paradas del jugador"
+      - name: core_assists
+        description: "Asistencias del jugador"
+      - name: core_score
+        description: "Puntuación del jugador en la partida"
+      - name: core_mvp
+        description: "Indica si el jugador fue el MVP de la partida"
+
+      # boost
+      - name: boost_bpm
+        description: "Boost consumido por minuto (no derivable: no hay boost gastado total)"
+      - name: boost_avg_amount
+        description: "Cantidad media de boost que tenía el jugador (0-100)"
+      - name: boost_amount_collected
+        description: "Cantidad total de boost recogido"
+      - name: boost_amount_stolen
+        description: "Cantidad de boost recogido en el campo rival"
+      - name: boost_amount_collected_big
+        description: "Boost recogido en pads grandes"
+      - name: boost_amount_stolen_big
+        description: "Boost recogido en pads grandes del campo rival"
+      - name: boost_amount_collected_small
+        description: "Boost recogido en pads pequeños"
+      - name: boost_amount_stolen_small
+        description: "Boost recogido en pads pequeños del campo rival"
+      - name: boost_count_collected_big
+        description: "Número de pads grandes recogidos"
+      - name: boost_count_stolen_big
+        description: "Número de pads grandes recogidos en el campo rival"
+      - name: boost_count_collected_small
+        description: "Número de pads pequeños recogidos"
+      - name: boost_count_stolen_small
+        description: "Número de pads pequeños recogidos en el campo rival"
+      - name: boost_amount_overfill
+        description: "Boost desperdiciado al recoger pads con el depósito casi lleno"
+      - name: boost_amount_overfill_stolen
+        description: "Boost desperdiciado al recoger pads del campo rival con el depósito casi lleno"
+      - name: boost_amount_used_while_supersonic
+        description: "Boost gastado yendo ya a velocidad supersónica"
+      - name: boost_time_zero_boost
+        description: "Segundos con el depósito de boost vacío"
+      - name: boost_time_full_boost
+        description: "Segundos con el depósito de boost lleno"
+      - name: boost_time_boost_0_25
+        description: "Segundos con entre 0 y 25 de boost"
+      - name: boost_time_boost_25_50
+        description: "Segundos con entre 25 y 50 de boost"
+      - name: boost_time_boost_50_75
+        description: "Segundos con entre 50 y 75 de boost"
+      - name: boost_time_boost_75_100
+        description: "Segundos con entre 75 y 100 de boost"
+
+      # movimiento
+      - name: mv_avg_speed
+        description: "Velocidad media del jugador (unidades del juego)"
+      - name: mv_total_distance
+        description: "Distancia total recorrida (unidades del juego)"
+      - name: mv_time_supersonic_speed
+        description: "Segundos a velocidad supersónica"
+      - name: mv_time_boost_speed
+        description: "Segundos a velocidad de boost"
+      - name: mv_time_slow_speed
+        description: "Segundos a velocidad lenta"
+      - name: mv_time_ground
+        description: "Segundos en el suelo"
+      - name: mv_time_low_air
+        description: "Segundos en el aire a poca altura"
+      - name: mv_time_high_air
+        description: "Segundos en el aire a mucha altura"
+      - name: mv_time_powerslide
+        description: "Segundos derrapando (powerslide)"
+      - name: mv_count_powerslide
+        description: "Número de derrapes (powerslide)"
+
+      # posicionamiento
+      - name: pos_avg_distance_to_ball
+        description: "Distancia media a la pelota"
+      - name: pos_avg_distance_to_ball_possession
+        description: "Distancia media a la pelota cuando su equipo tiene la posesión"
+      - name: pos_avg_distance_to_ball_no_possession
+        description: "Distancia media a la pelota cuando el rival tiene la posesión"
+      - name: pos_avg_distance_to_mates
+        description: "Distancia media a sus compañeros de equipo"
+      - name: pos_time_defensive_third
+        description: "Segundos en el tercio defensivo del campo"
+      - name: pos_time_neutral_third
+        description: "Segundos en el tercio central del campo"
+      - name: pos_time_offensive_third
+        description: "Segundos en el tercio ofensivo del campo"
+      - name: pos_time_defensive_half
+        description: "Segundos en la mitad defensiva del campo"
+      - name: pos_time_offensive_half
+        description: "Segundos en la mitad ofensiva del campo"
+      - name: pos_time_behind_ball
+        description: "Segundos por detrás de la pelota (entre la pelota y su portería). Base del caso estrella"
+      - name: pos_time_infront_ball
+        description: "Segundos por delante de la pelota"
+      - name: pos_time_most_back
+        description: "Segundos siendo el jugador más retrasado de su equipo"
+      - name: pos_time_most_forward
+        description: "Segundos siendo el jugador más adelantado de su equipo"
+      - name: pos_time_closest_to_ball
+        description: "Segundos siendo el jugador de su equipo más cercano a la pelota"
+      - name: pos_time_farthest_from_ball
+        description: "Segundos siendo el jugador de su equipo más lejano a la pelota"
+      - name: pos_goals_against_while_last_defender
+        description: "Goles encajados siendo último defensor (vacío convertido a 0 en staging)"
+
+      # demoliciones
+      - name: demo_inflicted
+        description: "Demoliciones que hizo el jugador"
+      - name: demo_taken
+        description: "Demoliciones que sufrió el jugador"
