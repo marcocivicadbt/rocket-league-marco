@@ -1,5 +1,22 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key=['match_id', 'player_id'],
+        incremental_strategy='merge',
+        on_schema_change='fail'
+    )
+}}
+
+
 with filtered as (
     select * from {{ ref('int_rlcs__player_stats_filtered') }}
+
+
+    {% if is_incremental() %}
+    -- solo partidas que todavía no están en la tabla
+    where replay_id not in (select match_id from {{ this }})
+    {% endif %}
+
 ),
 
 final as (
