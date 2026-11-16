@@ -43,3 +43,8 @@ models:
     silver:
       +database: RL_DEV_SILVER_DB
       +materialized: table
+
+
+vars:
+  min_match_seconds: 300    # partidas más cortas: no válidas (is_short)
+  abandonment_seconds: 30   # margen para entrar tarde o salir antes (has_abandonment)
