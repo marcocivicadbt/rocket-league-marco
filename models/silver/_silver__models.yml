@@ -133,6 +133,10 @@ models:
         description: "Serie a la que pertenece la partida (leaf_group_id renombrado). FK a slv_rlcs__competition_groups"
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('slv_rlcs__competition_groups')
+                field: group_id
       - name: playlist_id
         description: "Lista de juego (private = online, local-lobby = LAN). FK a slv_rlcs__playlists"
         data_tests:
@@ -366,3 +370,44 @@ models:
         description: "Demoliciones que hizo el jugador"
       - name: demo_taken
         description: "Demoliciones que sufrió el jugador"
+
+  - name: slv_rlcs__competition_groups
+    description: >
+      Árbol de competición: un grupo de ballchasing por fila (temporada, split, región,
+      torneo, fase, ronda o serie), con su grupo padre. Se construye troceando las rutas
+      group_id_path y group_path. Las rutas tienen de 3 a 9 niveles y cada nivel no significa
+      lo mismo en cada temporada, así que el tipo solo se asigna cuando es seguro
+      (temporada, región y serie); el resto queda vacío.
+    columns:
+      - name: group_id
+        description: "Identificador del grupo en ballchasing"
+        data_tests:
+          - unique
+          - not_null
+      - name: group_name
+        description: "Nombre del grupo tal como viene en ballchasing (puede llevar un prefijo [n])"
+        data_tests:
+          - not_null
+      - name: parent_group_id
+        description: "Grupo padre (el trozo anterior de la ruta). Vacío en las temporadas (raíz)"
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('slv_rlcs__competition_groups')
+                field: group_id
+      - name: group_level
+        description: "Profundidad en el árbol (0 = temporada)"
+        data_tests:
+          - not_null
+      - name: group_type_id
+        description: >
+          Tipo de grupo: 1 season (nivel 0), 7 series (grupo sin hijos), 4 region (lista cerrada
+          de regiones). Vacío cuando no se puede identificar con seguridad (fases, rondas, torneos)
+          Hay 2 grupos (una ronda y una fase) que tienen hijos y además 4 partidas colgando
+          directamente, por un error de subida en ballchasing: se quedan sin tipo y esas
+          4 partidas no tienen serie.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('slv_rlcs__group_types')
+                field: group_type_id      
