@@ -1,0 +1,18 @@
+version: 2
+
+data_tests:
+  - name: assert_valid_matches_have_winner
+    description: >
+      Toda partida válida tiene ganador: la suma de goles de los jugadores de un equipo
+      es distinta de la del otro (en Rocket League no hay empates). Usa match_players,
+      que es de donde gold saca el ganador.
+
+  - name: assert_valid_matches_have_six_players
+    description: >
+      Toda partida válida es un 3v3: 6 jugadores en match_players, 3 en el equipo azul.
+      Vigila el grano tras resolver la reconexión.
+
+  - name: assert_match_players_have_match_team
+    description: >
+      Clave foránea compuesta: todo (match_id, team_color) de match_players existe en
+      match_teams. El test relationships de dbt solo admite una columna.
