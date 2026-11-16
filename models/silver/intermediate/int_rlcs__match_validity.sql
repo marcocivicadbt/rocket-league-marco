@@ -38,9 +38,9 @@ final as (
 
     select
         p.replay_id                                       as match_id,
-        p.duracion < 300                                  as is_short,
-        p.entrada_mas_tardia > 30
-            or p.salida_mas_temprana < p.duracion - 30    as has_abandonment,
+        p.duracion < {{ var('min_match_seconds') }}       as is_short,
+        p.entrada_mas_tardia > {{ var('abandonment_seconds') }}
+            or p.salida_mas_temprana < p.duracion - {{ var('abandonment_seconds') }}    as has_abandonment,
         g.goles_no_cuadran                                as has_goal_mismatch,
         g.goles_azul = g.goles_naranja                    as is_tie
     from partidas p

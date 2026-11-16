@@ -275,3 +275,38 @@ models:
         description: "Demoliciones que hizo el jugador"
       - name: demo_taken
         description: "Demoliciones que sufrió el jugador"
+        
+  - name: int_rlcs__match_validity
+    description: >
+      Calidad: una fila por partida con las reglas que la hacen no fiable. No borra nada:
+      solo marca. Las partidas se siguen guardando y slv_rlcs__matches trae is_valid.
+      Los umbrales están en dbt_project.yml (vars min_match_seconds y abandonment_seconds).
+      Resultado: 452 partidas no válidas de 37.401 (1,2 %).
+    columns:
+      - name: match_id
+        description: "Identificador de la partida (replay_id de ballchasing)"
+        data_tests:
+          - unique
+          - not_null
+      - name: is_short
+        description: "La partida dura menos de min_match_seconds (300 s): probablemente cortada. 301 partidas"
+        data_tests:
+          - not_null
+      - name: has_abandonment
+        description: >
+          Algún jugador entró después de abandonment_seconds (30 s) o salió más de 30 s antes
+          del final. Probado con 5 s (166), 10 s (95) y 30 s (36). Incluye la reconexión. 36 partidas
+        data_tests:
+          - not_null
+      - name: has_goal_mismatch
+        description: "Los goles de algún equipo no coinciden con la suma de los goles de sus jugadores. 78 partidas"
+        data_tests:
+          - not_null
+      - name: is_tie
+        description: "Empate en goles: imposible en Rocket League (hay prórroga), indica replay cortado. 193 partidas"
+        data_tests:
+          - not_null
+      - name: is_valid
+        description: "Verdadero si la partida no cumple ninguna de las reglas anteriores"
+        data_tests:
+          - not_null
