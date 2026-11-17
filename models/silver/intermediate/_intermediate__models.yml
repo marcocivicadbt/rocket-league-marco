@@ -310,3 +310,55 @@ models:
         description: "Verdadero si la partida no cumple ninguna de las reglas anteriores"
         data_tests:
           - not_null
+
+unit_tests:
+  - name: test_match_validity_rules
+    description: >
+      Comprueba las reglas de is_valid con 5 partidas inventadas, cada una pensada
+      para activar una sola regla: normal, corta, empate, límite de 300 s y abandono.
+    model: int_rlcs__match_validity
+    given:
+      - input: ref('int_rlcs__player_stats_filtered')
+        rows:
+          # A: normal, 400 s, 3-1 → válida
+          - {replay_id: A, team_color: blue,   team_goals: 3, core_goals: 2, duration: 400, start_time: 0, end_time: 400}
+          - {replay_id: A, team_color: blue,   team_goals: 3, core_goals: 1, duration: 400, start_time: 0, end_time: 400}
+          - {replay_id: A, team_color: blue,   team_goals: 3, core_goals: 0, duration: 400, start_time: 0, end_time: 400}
+          - {replay_id: A, team_color: orange, team_goals: 1, core_goals: 1, duration: 400, start_time: 0, end_time: 400}
+          - {replay_id: A, team_color: orange, team_goals: 1, core_goals: 0, duration: 400, start_time: 0, end_time: 400}
+          - {replay_id: A, team_color: orange, team_goals: 1, core_goals: 0, duration: 400, start_time: 0, end_time: 400}
+          # B: corta, 200 s → no válida
+          - {replay_id: B, team_color: blue,   team_goals: 2, core_goals: 2, duration: 200, start_time: 0, end_time: 200}
+          - {replay_id: B, team_color: blue,   team_goals: 2, core_goals: 0, duration: 200, start_time: 0, end_time: 200}
+          - {replay_id: B, team_color: blue,   team_goals: 2, core_goals: 0, duration: 200, start_time: 0, end_time: 200}
+          - {replay_id: B, team_color: orange, team_goals: 1, core_goals: 1, duration: 200, start_time: 0, end_time: 200}
+          - {replay_id: B, team_color: orange, team_goals: 1, core_goals: 0, duration: 200, start_time: 0, end_time: 200}
+          - {replay_id: B, team_color: orange, team_goals: 1, core_goals: 0, duration: 200, start_time: 0, end_time: 200}
+          # C: empate 2-2 → no válida
+          - {replay_id: C, team_color: blue,   team_goals: 2, core_goals: 1, duration: 400, start_time: 0, end_time: 400}
+          - {replay_id: C, team_color: blue,   team_goals: 2, core_goals: 1, duration: 400, start_time: 0, end_time: 400}
+          - {replay_id: C, team_color: blue,   team_goals: 2, core_goals: 0, duration: 400, start_time: 0, end_time: 400}
+          - {replay_id: C, team_color: orange, team_goals: 2, core_goals: 2, duration: 400, start_time: 0, end_time: 400}
+          - {replay_id: C, team_color: orange, team_goals: 2, core_goals: 0, duration: 400, start_time: 0, end_time: 400}
+          - {replay_id: C, team_color: orange, team_goals: 2, core_goals: 0, duration: 400, start_time: 0, end_time: 400}
+          # D: caso límite, 300 s justos → válida (la regla es < 300)
+          - {replay_id: D, team_color: blue,   team_goals: 1, core_goals: 1, duration: 300, start_time: 0, end_time: 300}
+          - {replay_id: D, team_color: blue,   team_goals: 1, core_goals: 0, duration: 300, start_time: 0, end_time: 300}
+          - {replay_id: D, team_color: blue,   team_goals: 1, core_goals: 0, duration: 300, start_time: 0, end_time: 300}
+          - {replay_id: D, team_color: orange, team_goals: 0, core_goals: 0, duration: 300, start_time: 0, end_time: 300}
+          - {replay_id: D, team_color: orange, team_goals: 0, core_goals: 0, duration: 300, start_time: 0, end_time: 300}
+          - {replay_id: D, team_color: orange, team_goals: 0, core_goals: 0, duration: 300, start_time: 0, end_time: 300}
+          # E: abandono, un jugador entra en el segundo 60 → no válida
+          - {replay_id: E, team_color: blue,   team_goals: 3, core_goals: 2, duration: 400, start_time: 60, end_time: 400}
+          - {replay_id: E, team_color: blue,   team_goals: 3, core_goals: 1, duration: 400, start_time: 0,  end_time: 400}
+          - {replay_id: E, team_color: blue,   team_goals: 3, core_goals: 0, duration: 400, start_time: 0,  end_time: 400}
+          - {replay_id: E, team_color: orange, team_goals: 1, core_goals: 1, duration: 400, start_time: 0,  end_time: 400}
+          - {replay_id: E, team_color: orange, team_goals: 1, core_goals: 0, duration: 400, start_time: 0,  end_time: 400}
+          - {replay_id: E, team_color: orange, team_goals: 1, core_goals: 0, duration: 400, start_time: 0,  end_time: 400}
+    expect:
+      rows:
+        - {match_id: A, is_short: false, has_abandonment: false, has_goal_mismatch: false, is_tie: false, is_valid: true}
+        - {match_id: B, is_short: true,  has_abandonment: false, has_goal_mismatch: false, is_tie: false, is_valid: false}
+        - {match_id: C, is_short: false, has_abandonment: false, has_goal_mismatch: false, is_tie: true,  is_valid: false}
+        - {match_id: D, is_short: false, has_abandonment: false, has_goal_mismatch: false, is_tie: false, is_valid: true}
+        - {match_id: E, is_short: false, has_abandonment: true,  has_goal_mismatch: false, is_tie: false, is_valid: false}
