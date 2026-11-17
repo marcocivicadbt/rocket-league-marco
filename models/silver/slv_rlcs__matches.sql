@@ -16,13 +16,23 @@ from {{ ref('int_rlcs__player_stats_filtered') }}
 
 validez as (
 
-    select * from {{ ref('int_rlcs__match_validity') }}     
+    select * from {{ ref('int_rlcs__match_validity') }}
+
+),
+
+numero_partida as (
+
+    select * from {{ ref('int_rlcs__match_game_number') }}
 
 )
 
 select
     p.*,
-    v.is_valid                                     
+    v.is_valid,
+    n.game_number,
+    n.is_clean_series
 from partidas p
 left join validez v
-    on p.match_id = v.match_id                     
+    on p.match_id = v.match_id
+left join numero_partida n
+    on p.match_id = n.match_id
