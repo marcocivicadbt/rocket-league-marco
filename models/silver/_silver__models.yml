@@ -181,6 +181,14 @@ models:
         description: "Indica si la partida es válida para el análisis. Falso si es corta (< 5 min), tiene un abandono (> 30 s fuera), los goles no cuadran o hay empate. Ver int_rlcs__match_validity"
         data_tests:
           - not_null
+      - name: game_number
+        description: "Orden de la partida en su serie según la fecha (1 = la primera). Ver int_rlcs__match_game_number"
+        data_tests:
+          - not_null
+      - name: is_clean_series
+        description: "Verdadero si el orden de la serie está confirmado por la fecha y por el título. El tilt solo usa series limpias"
+        data_tests:
+          - not_null
   
   - name: slv_rlcs__match_players
     description: >

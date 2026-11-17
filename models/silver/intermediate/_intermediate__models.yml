@@ -311,6 +311,30 @@ models:
         data_tests:
           - not_null
 
+  - name: int_rlcs__match_game_number
+    description: >
+      Número de partida dentro de su serie. game_number ordena por fecha. Una serie es
+      limpia si todas sus partidas traen el número en el título y coincide con el orden por
+      fecha: 6.679 de 8.555 series (78 %), 28.256 partidas. Las demás tienen partidas sin
+      número, replays partidos ([Part 2], G5 A/B), series incompletas o dos series mezcladas
+      en el mismo grupo. Solo las series limpias se usan para el caso del tilt.
+    columns:
+      - name: match_id
+        description: "Identificador de la partida (replay_id de ballchasing)"
+        data_tests:
+          - unique
+          - not_null
+      - name: game_number
+        description: "Orden de la partida en su serie según la fecha (1 = la primera)"
+        data_tests:
+          - not_null
+      - name: title_game_number
+        description: "Número de partida escrito en el título (último 'G/Game + número'). Vacío si el título no lo trae"
+      - name: is_clean_series
+        description: "Verdadero si en toda la serie el número del título coincide con el orden por fecha"
+        data_tests:
+          - not_null
+
 unit_tests:
   - name: test_match_validity_rules
     description: >
