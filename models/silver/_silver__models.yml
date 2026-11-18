@@ -196,7 +196,7 @@ models:
       Guarda lo que hizo cada jugador en cada partida. Solo estadísticas no derivables:
       los porcentajes y valores por minuto se calculan en gold. Si un jugador se reconectó
       (2 filas en la misma partida), se queda el tramo más largo. Modelo incremental (merge
-      por match_id + player_id). Todas las estadísticas llevan el test non_negative.
+      por match_id + player_id) . Todas las estadísticas llevan el test non_negative.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
