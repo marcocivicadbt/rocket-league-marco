@@ -267,12 +267,6 @@ models:
       - name: boost_avg_amount
         description: "Cantidad media de boost que tenía el jugador (0-100)"
         data_tests: [non_negative]
-      - name: boost_amount_collected
-        description: "Cantidad total de boost recogido"
-        data_tests: [non_negative]
-      - name: boost_amount_stolen
-        description: "Cantidad de boost recogido en el campo rival"
-        data_tests: [non_negative]
       - name: boost_amount_collected_big
         description: "Boost recogido en pads grandes"
         data_tests: [non_negative]

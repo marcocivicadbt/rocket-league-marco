@@ -39,8 +39,6 @@ final as (
         -- boost
         boost_bpm,
         boost_avg_amount,
-        boost_amount_collected,
-        boost_amount_stolen,
         boost_amount_collected_big,
         boost_amount_stolen_big,
         boost_amount_collected_small,
