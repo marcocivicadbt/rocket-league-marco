@@ -37,6 +37,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   rocket_league_marco:
+    +schema: rlcs
     staging:
       +database: "{{ env_var('DBT_SILVER_DB') }}"
       +materialized: view
@@ -49,6 +50,7 @@ models:
 
 seeds:
   rocket_league_marco:
+    +schema: seeds
     +database: "{{ env_var('DBT_BRONZE_DB') }}"
 
 vars:
