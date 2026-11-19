@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: dim_car
+    description: "Dimensión de coches: un coche por fila. Para analizar qué coches se usan y si influyen en ganar."
+    columns:
+      - name: car_id
+        description: "Identificador del coche"
+        data_tests:
+          - unique
+          - not_null
+      - name: car_name
+        description: "Nombre del coche (Octane, Fennec…)"
+        data_tests:
+          - not_null
+
+  - name: dim_player
+    description: "Dimensión de jugadores: un jugador por fila. Identificado por plataforma + id de cuenta, porque el nombre puede cambiar."
+    columns:
+      - name: player_id
+        description: "Clave del jugador (hash de plataforma + id de cuenta)."
+        data_tests:
+          - unique
+          - not_null
+      - name: player_name
+        description: "Nombre más reciente no vacío del jugador (SCD tipo 1): 397 jugadores cambiaron de nombre."
+        data_tests:
+          - not_null
+      - name: player_platform
+        description: "Plataforma de la cuenta del jugador (steam, epic, ps4…)."
+        data_tests:
+          - not_null
+
+  - name: dim_team
+    description: "Dimensión de equipos: un equipo por fila. El dataset no trae id de equipo, así que la clave se genera a partir del nombre."
+    columns:
+      - name: team_id
+        description: "Clave del equipo (hash del nombre en mayúsculas)."
+        data_tests:
+          - unique
+          - not_null
+      - name: team_name
+        description: "Nombre del equipo en mayúsculas."
+        data_tests:
+          - not_null
