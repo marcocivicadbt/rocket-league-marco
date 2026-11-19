@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: dim_car
+    description: "Dimensión de coches: un coche por fila. Para analizar qué coches se usan y si influyen en ganar."
+    columns:
+      - name: car_id
+        description: "Identificador del coche"
+        data_tests:
+          - unique
+          - not_null
+      - name: car_name
+        description: "Nombre del coche (Octane, Fennec…)"
+        data_tests:
+          - not_null
+
+  - name: dim_player
+    description: "Dimensión de jugadores: un jugador por fila. Identificado por plataforma + id de cuenta, porque el nombre puede cambiar."
+    columns:
+      - name: player_id
+        description: "Clave del jugador (hash de plataforma + id de cuenta)."
+        data_tests:
+          - unique
+          - not_null
+      - name: player_name
+        description: "Nombre más reciente no vacío del jugador (SCD tipo 1): 397 jugadores cambiaron de nombre."
+        data_tests:
+          - not_null
+      - name: player_platform
+        description: "Plataforma de la cuenta del jugador (steam, epic, ps4…)."
+        data_tests:
+          - not_null
+
+  - name: dim_team
+    description: "Dimensión de equipos: un equipo por fila. El dataset no trae id de equipo, así que la clave se genera a partir del nombre."
+    columns:
+      - name: team_id
+        description: "Clave del equipo (hash del nombre en mayúsculas)."
+        data_tests:
+          - unique
+          - not_null
+      - name: team_name
+        description: "Nombre del equipo en mayúsculas."
+        data_tests:
+          - not_null
+
+  - name: dim_date
+    description: "Calendario continuo: un día por fila, del 01-10-2021 al 28-02-2026 (cubre todas las partidas). Continuo, sin huecos, para que en el consumo lo use como tabla de fechas. Las fechas no traen zona horaria fiable: una partida cerca de medianoche puede caer en el día de al lado."
+    columns:
+      - name: date_day
+        description: "El día (clave)."
+        data_tests:
+          - unique
+          - not_null
+      - name: year
+        description: "Año."
+      - name: quarter
+        description: "Trimestre (1-4)."
+      - name: month
+        description: "Mes (1-12)."
+      - name: month_name
+        description: "Nombre abreviado del mes (Jan, Feb…)."
+      - name: year_month
+        description: "Año y mes (YYYY-MM), para ordenar por mes."
+      - name: week_of_year
+        description: "Semana del año."
+      - name: day_of_week
+        description: "Día de la semana (1 = lunes, 7 = domingo)."
+      - name: day_name
+        description: "Nombre abreviado del día (Mon, Tue…)."
+      - name: is_weekend
+        description: "Verdadero si es sábado o domingo."

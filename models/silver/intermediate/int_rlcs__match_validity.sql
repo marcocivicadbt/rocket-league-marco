@@ -1,3 +1,5 @@
+{{ config(materialized='view') }}
+
 with equipos as (
 
     select
