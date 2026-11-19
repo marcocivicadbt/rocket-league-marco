@@ -1,3 +1,5 @@
+{{ config(materialized='view') }}
+
 with partidas as (
     select distinct
         replay_id as match_id,
