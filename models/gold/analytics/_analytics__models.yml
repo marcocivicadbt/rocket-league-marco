@@ -42,4 +42,22 @@ models:
       - name: pct_wins_series
         description: "% de esas series que acabó ganando el equipo"
 
+  - name: agg_tilt
+    description: >
+      Tilt: tras perder una partida, ¿el equipo gana la siguiente de la serie? Separado por si
+      la derrota fue en la prórroga (gol de oro) o en tiempo normal. Solo series limpias, con
+      todas sus partidas válidas, al menos 2 partidas y exactamente 2 equipos.
+    columns:
+      - name: previous_loss
+        description: "Cómo perdió la partida anterior: en la prórroga o en tiempo normal"
+        data_tests:
+          - unique
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Perdió en la prórroga', 'Perdió en tiempo normal']
+      - name: losses
+        description: "Número de derrotas analizadas (con una partida después)"
+      - name: pct_wins_next
+        description: "% de veces que el equipo ganó la partida siguiente"
   
