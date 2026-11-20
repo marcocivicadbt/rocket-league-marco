@@ -281,7 +281,7 @@ models:
       Calidad: una fila por partida con las reglas que la hacen no fiable. No borra nada:
       solo marca. Las partidas se siguen guardando y slv_rlcs__matches trae is_valid.
       Los umbrales están en dbt_project.yml (vars min_match_seconds y abandonment_seconds).
-      Resultado: 452 partidas no válidas de 37.401 (1,2 %).
+      Resultado: 471 partidas no válidas de 37.401 (1,3 %).
     columns:
       - name: match_id
         description: "Identificador de la partida (replay_id de ballchasing)"
@@ -308,6 +308,10 @@ models:
           - not_null
       - name: is_valid
         description: "Verdadero si la partida no cumple ninguna de las reglas anteriores"
+        data_tests:
+          - not_null
+      - name: has_overtime_mismatch
+        description: "Hubo prórroga pero no acabó por un gol: imposible con gol de oro. Indica un replay incompleto o partido en dos. 19 partidas"
         data_tests:
           - not_null
 
@@ -338,8 +342,9 @@ models:
 unit_tests:
   - name: test_match_validity_rules
     description: >
-      Comprueba las reglas de is_valid con 5 partidas inventadas, cada una pensada
-      para activar una sola regla: normal, corta, empate, límite de 300 s y abandono.
+      Comprueba las reglas de is_valid con 6 partidas inventadas, cada una pensada
+      para activar una sola regla: normal, corta, empate, límite de 300 s, abandono
+      y prórroga que no acaba por un gol.
     model: int_rlcs__match_validity
     given:
       - input: ref('int_rlcs__player_stats_filtered')
@@ -379,10 +384,18 @@ unit_tests:
           - {replay_id: E, team_color: orange, team_goals: 1, core_goals: 1, duration: 400, start_time: 0,  end_time: 400}
           - {replay_id: E, team_color: orange, team_goals: 1, core_goals: 0, duration: 400, start_time: 0,  end_time: 400}
           - {replay_id: E, team_color: orange, team_goals: 1, core_goals: 0, duration: 400, start_time: 0,  end_time: 400}
+          # F: prórroga pero 3-1 (imposible con gol de oro) → no válida
+          - {replay_id: F, team_color: blue,   team_goals: 3, core_goals: 2, duration: 400, overtime_seconds: 30, start_time: 0, end_time: 400}
+          - {replay_id: F, team_color: blue,   team_goals: 3, core_goals: 1, duration: 400, overtime_seconds: 30, start_time: 0, end_time: 400}
+          - {replay_id: F, team_color: blue,   team_goals: 3, core_goals: 0, duration: 400, overtime_seconds: 30, start_time: 0, end_time: 400}
+          - {replay_id: F, team_color: orange, team_goals: 1, core_goals: 1, duration: 400, overtime_seconds: 30, start_time: 0, end_time: 400}
+          - {replay_id: F, team_color: orange, team_goals: 1, core_goals: 0, duration: 400, overtime_seconds: 30, start_time: 0, end_time: 400}
+          - {replay_id: F, team_color: orange, team_goals: 1, core_goals: 0, duration: 400, overtime_seconds: 30, start_time: 0, end_time: 400}
     expect:
       rows:
-        - {match_id: A, is_short: false, has_abandonment: false, has_goal_mismatch: false, is_tie: false, is_valid: true}
-        - {match_id: B, is_short: true,  has_abandonment: false, has_goal_mismatch: false, is_tie: false, is_valid: false}
-        - {match_id: C, is_short: false, has_abandonment: false, has_goal_mismatch: false, is_tie: true,  is_valid: false}
-        - {match_id: D, is_short: false, has_abandonment: false, has_goal_mismatch: false, is_tie: false, is_valid: true}
-        - {match_id: E, is_short: false, has_abandonment: true,  has_goal_mismatch: false, is_tie: false, is_valid: false}
+        - {match_id: A, is_short: false, has_abandonment: false, has_goal_mismatch: false, has_overtime_mismatch: false, is_tie: false, is_valid: true}
+        - {match_id: B, is_short: true,  has_abandonment: false, has_goal_mismatch: false, has_overtime_mismatch: false, is_tie: false, is_valid: false}
+        - {match_id: C, is_short: false, has_abandonment: false, has_goal_mismatch: false, has_overtime_mismatch: false, is_tie: true,  is_valid: false}
+        - {match_id: D, is_short: false, has_abandonment: false, has_goal_mismatch: false, has_overtime_mismatch: false, is_tie: false, is_valid: true}
+        - {match_id: E, is_short: false, has_abandonment: true,  has_goal_mismatch: false, has_overtime_mismatch: false, is_tie: false, is_valid: false}
+        - {match_id: F, is_short: false, has_abandonment: false, has_goal_mismatch: false, has_overtime_mismatch: true,  is_tie: false, is_valid: false}
