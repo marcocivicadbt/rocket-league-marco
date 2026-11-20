@@ -45,7 +45,8 @@ final as (
             when padres.parent_group_id is null then 7         -- series: no tiene hijos (hoja)
             when regexp_replace(grupos.group_name, '^\\[\\d+\\] ', '') in (
                 'Europe', 'North America', 'South America', 'Oceania',
-                'Middle East & North Africa', 'Sub-Saharan Africa',
+                'Middle East & North Africa', 'Middle East and North Africa',
+                'Sub-Saharan Africa',
                 'Asia-Pacific', 'Asia-Pacific North', 'Asia-Pacific South'
             ) then 4                                           -- region: lista cerrada
         end as group_type_id                                   -- resto: vacío (no identificable con seguridad)

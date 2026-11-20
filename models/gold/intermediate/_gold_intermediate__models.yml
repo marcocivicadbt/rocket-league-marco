@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: int_match_team_stats
+    description: >
+      Estadísticas de cada equipo en cada partida: suma de los 3 jugadores (tiempos y conteos)
+      o media (distancias, velocidad y boost medios). Se calcula una vez y la usan dim_match
+      (goles para is_close_match) y fct_match_teams.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - match_id
+              - team_color
+    columns:
+      - name: match_id
+        description: "Identificador de la partida"
+        data_tests: [not_null]
+      - name: team_color
+        description: "Lado del equipo (blue u orange)"
+        data_tests: [not_null]
+      - name: core_goals
+        description: "Goles del equipo (suma de sus jugadores)"
+      # el resto: misma estadística de match_players, sumada o promediada por equipo

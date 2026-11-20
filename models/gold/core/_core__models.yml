@@ -70,3 +70,52 @@ models:
         description: "Nombre abreviado del día (Mon, Tue…)."
       - name: is_weekend
         description: "Verdadero si es sábado o domingo."
+
+  - name: dim_match
+    description: >
+      Dimensión de partidas: una partida por fila, con todo lo que la describe aplanado
+      (mapa, LAN/online, temporada del juego, competición) y los indicadores de calidad.
+      La temporada RLCS y la región se obtienen subiendo por el árbol de competición.
+    columns:
+      - name: match_id
+        description: "Identificador de la partida (replay_id de ballchasing)"
+        data_tests: [unique, not_null]
+      - name: match_date
+        description: "Fecha y hora de la partida (sin zona horaria fiable)"
+        data_tests: [not_null]
+      - name: title
+        description: "Título del replay"
+      - name: duration
+        description: "Duración en segundos (incluida la prórroga)"
+      - name: overtime_seconds
+        description: "Segundos de prórroga; vacío si no hubo"
+      - name: has_overtime
+        description: "Verdadero si hubo prórroga (para el caso del tilt)"
+      - name: map_name
+        description: "Nombre del mapa"
+        data_tests: [not_null]
+      - name: match_type
+        description: "Private (online) o Lan (presencial)"
+        data_tests: [not_null]
+      - name: season
+        description: "Temporada del juego (T4, T19…)"
+      - name: season_type
+        description: "Tipo de temporada del juego (legacy o free2play)"
+      - name: rlcs_season
+        description: "Temporada de competición RLCS (raíz del árbol)"
+        data_tests: [not_null]
+      - name: region
+        description: "Región, si la partida es de un torneo regional; vacío en eventos internacionales"
+      - name: series_id
+        description: "Identificador de la serie. Vacío en 4 partidas mal subidas a una ronda en ballchasing"
+      - name: series_name
+        description: "Nombre de la serie (por ejemplo, KC vs G2)"
+      - name: game_number
+        description: "Orden de la partida en su serie, por fecha"
+      - name: is_clean_series
+        description: "Verdadero si la fecha y el número del título coinciden en toda la serie. El tilt solo usa estas"
+      - name: is_valid
+        description: "Falso si la partida es corta, tiene abandono, goles que no cuadran o empate"
+        data_tests: [not_null]
+      - name: is_close_match
+        description: "Verdadero si se decidió por un gol"
