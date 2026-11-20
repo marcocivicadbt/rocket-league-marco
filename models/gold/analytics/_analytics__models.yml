@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: agg_win_factors
+    description: >
+      Caso estrella: ¿qué gana partidas? Una fila por estadística, con el % de partidas válidas
+      en que ganó el equipo que tuvo más de ella, en todas y solo en las igualadas (por un gol).
+      50 % = no influye. Las partidas en que los dos equipos empatan en la estadística no cuentan.
+    columns:
+      - name: stat_name
+        description: "Estadística comparada (columna de fct_match_teams)"
+        data_tests: [unique, not_null]
+      - name: stat_group
+        description: "Grupo de juego de la estadística"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Colocación', 'Mecánicas', 'Velocidad', 'Boost', 'Agresividad', 'Core']
+      - name: pct_all_matches
+        description: "% de partidas válidas en que ganó el equipo con más de esta estadística"
+        data_tests: [not_null]
+      - name: pct_close_matches
+        description: "Lo mismo, solo en partidas decididas por un gol"
+      - name: matches_compared
+        description: "Partidas en que se pudo comparar (los equipos no empataron en la estadística)"
+  
+  - name: agg_series_momentum
+    description: >
+      Momentum en la serie: ¿ganar las primeras partidas decide la serie? Una fila por escenario,
+      con el % de series que acabó ganando el equipo en esa situación. Solo series limpias
+      (orden confirmado por fecha y título), con todas sus partidas válidas, al menos 3 partidas
+      y un ganador claro.
+      Se descartan las series que no tienen exactamente 2 equipos: variantes del mismo nombre
+      (VITALITY / TEAM VITALITY), equipos por definir (TBD, TBA) o sin nombre ("NAN").
+    columns:
+      - name: scenario
+        description: "Situación del equipo al principio de la serie"
+        data_tests: [unique, not_null]
+      - name: series
+        description: "Número de series en esa situación"
+      - name: pct_wins_series
+        description: "% de esas series que acabó ganando el equipo"
+
+  
