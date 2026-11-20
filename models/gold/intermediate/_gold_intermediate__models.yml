@@ -19,6 +19,117 @@ models:
       - name: team_color
         description: "Lado del equipo (blue u orange)"
         data_tests: [not_null]
+
+      # core (suma)
+      - name: core_shots
+        description: "Tiros a puerta del equipo (suma de sus jugadores)"
       - name: core_goals
         description: "Goles del equipo (suma de sus jugadores)"
-      # el resto: misma estadística de match_players, sumada o promediada por equipo
+      - name: core_saves
+        description: "Paradas del equipo (suma)"
+      - name: core_assists
+        description: "Asistencias del equipo (suma)"
+      - name: core_score
+        description: "Puntuación del equipo (suma)"
+
+      # boost
+      - name: boost_bpm
+        description: "Boost consumido por minuto por el equipo (suma)"
+      - name: boost_amount_collected_big
+        description: "Boost recogido en pads grandes (suma)"
+      - name: boost_amount_stolen_big
+        description: "Boost recogido en pads grandes del campo rival (suma)"
+      - name: boost_amount_collected_small
+        description: "Boost recogido en pads pequeños (suma)"
+      - name: boost_amount_stolen_small
+        description: "Boost recogido en pads pequeños del campo rival (suma)"
+      - name: boost_count_collected_big
+        description: "Número de pads grandes recogidos (suma)"
+      - name: boost_count_stolen_big
+        description: "Número de pads grandes recogidos en el campo rival (suma)"
+      - name: boost_count_collected_small
+        description: "Número de pads pequeños recogidos (suma)"
+      - name: boost_count_stolen_small
+        description: "Número de pads pequeños recogidos en el campo rival (suma)"
+      - name: boost_amount_overfill
+        description: "Boost desperdiciado con el depósito casi lleno (suma)"
+      - name: boost_amount_overfill_stolen
+        description: "Boost desperdiciado en el campo rival con el depósito casi lleno (suma)"
+      - name: boost_amount_used_while_supersonic
+        description: "Boost gastado yendo ya a velocidad supersónica (suma)"
+      - name: boost_time_zero_boost
+        description: "Segundos con el depósito vacío (suma de los 3 jugadores)"
+      - name: boost_time_full_boost
+        description: "Segundos con el depósito lleno (suma)"
+      - name: boost_time_boost_0_25
+        description: "Segundos con entre 0 y 25 de boost (suma)"
+      - name: boost_time_boost_25_50
+        description: "Segundos con entre 25 y 50 de boost (suma)"
+      - name: boost_time_boost_50_75
+        description: "Segundos con entre 50 y 75 de boost (suma)"
+      - name: boost_time_boost_75_100
+        description: "Segundos con entre 75 y 100 de boost (suma)"
+      - name: boost_avg_amount
+        description: "Cantidad media de boost de los jugadores del equipo (media, 0-100)"
+
+      # movimiento
+      - name: mv_total_distance
+        description: "Distancia total recorrida por el equipo (suma)"
+      - name: mv_time_supersonic_speed
+        description: "Segundos a velocidad supersónica (suma)"
+      - name: mv_time_boost_speed
+        description: "Segundos a velocidad de boost (suma)"
+      - name: mv_time_slow_speed
+        description: "Segundos a velocidad lenta (suma)"
+      - name: mv_time_ground
+        description: "Segundos en el suelo (suma)"
+      - name: mv_time_low_air
+        description: "Segundos en el aire a poca altura (suma)"
+      - name: mv_time_high_air
+        description: "Segundos en el aire a mucha altura (suma)"
+      - name: mv_time_powerslide
+        description: "Segundos derrapando (suma)"
+      - name: mv_count_powerslide
+        description: "Número de derrapes (suma)"
+      - name: mv_avg_speed
+        description: "Velocidad media de los jugadores del equipo (media)"
+
+      # posicionamiento
+      - name: pos_time_defensive_third
+        description: "Segundos en el tercio defensivo (suma)"
+      - name: pos_time_neutral_third
+        description: "Segundos en el tercio central (suma)"
+      - name: pos_time_offensive_third
+        description: "Segundos en el tercio ofensivo (suma)"
+      - name: pos_time_defensive_half
+        description: "Segundos en la mitad defensiva (suma)"
+      - name: pos_time_offensive_half
+        description: "Segundos en la mitad ofensiva (suma)"
+      - name: pos_time_behind_ball
+        description: "Segundos por detrás de la pelota (suma). Base del caso estrella"
+      - name: pos_time_infront_ball
+        description: "Segundos por delante de la pelota (suma)"
+      - name: pos_time_most_back
+        description: "Segundos siendo el más retrasado de su equipo (suma)"
+      - name: pos_time_most_forward
+        description: "Segundos siendo el más adelantado de su equipo (suma)"
+      - name: pos_time_closest_to_ball
+        description: "Segundos siendo el más cercano a la pelota de su equipo (suma)"
+      - name: pos_time_farthest_from_ball
+        description: "Segundos siendo el más lejano a la pelota de su equipo (suma)"
+      - name: pos_goals_against_while_last_defender
+        description: "Goles encajados siendo último defensor (suma)"
+      - name: pos_avg_distance_to_ball
+        description: "Distancia media a la pelota de los jugadores del equipo (media)"
+      - name: pos_avg_distance_to_ball_possession
+        description: "Distancia media a la pelota con posesión propia (media)"
+      - name: pos_avg_distance_to_ball_no_possession
+        description: "Distancia media a la pelota con posesión rival (media)"
+      - name: pos_avg_distance_to_mates
+        description: "Distancia media entre compañeros (media)"
+
+      # demoliciones
+      - name: demo_inflicted
+        description: "Demoliciones hechas por el equipo (suma)"
+      - name: demo_taken
+        description: "Demoliciones sufridas por el equipo (suma)"
