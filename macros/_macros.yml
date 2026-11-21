@@ -1,0 +1,24 @@
+version: 2
+
+macros:
+  - name: generate_schema_name
+    description: >
+      Override de Cívica: en el IDE, los schemas llevan el prefijo personal
+      (DBT_ROCKET_MARCO_RLCS); en los jobs con target pro, el nombre limpio (RLCS, SEEDS).
+      En CI siempre con prefijo, para no tocar nunca los schemas de producción.
+
+  - name: simular_datos_pendientes
+    description: >
+      Demostración del incremental: aparta a PLAYER_STATS_PENDIENTES las filas de bronze
+      desde una fecha (por defecto 2026-01-01) y las borra de bronze. Solo en DEV.
+      Uso: dbt run-operation simular_datos_pendientes
+    arguments:
+      - name: desde
+        type: string
+        description: "Fecha desde la que se apartan las partidas (YYYY-MM-DD)"
+
+  - name: simular_llegada
+    description: >
+      Demostración del incremental: devuelve a bronze las filas apartadas ("llegan" datos
+      nuevos) y borra la tabla temporal, dejando todo como estaba. Solo en DEV.
+      Uso: dbt run-operation simular_llegada
