@@ -16,3 +16,10 @@ data_tests:
     description: >
       Clave foránea compuesta: todo (match_id, team_color) de match_players existe en
       match_teams. El test relationships de dbt solo admite una columna.
+
+  - name: assert_no_unlisted_duplicate_replays
+    description: >
+      Avisa (warn) de posibles partidas duplicadas que no están en la seed duplicate_replays:
+      replays distintos con la misma fecha, la misma duración y los mismos equipos. Con solo
+      fecha y duración salían 5 falsos positivos (partidas distintas en rondas simultáneas),
+      revisados a mano. Si aparece alguna, se revisa y, si se confirma, se añade a la seed.
