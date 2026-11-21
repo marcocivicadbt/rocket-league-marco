@@ -17,6 +17,8 @@ models:
           - accepted_values:
               arguments:
                 values: ['Colocación', 'Mecánicas', 'Velocidad', 'Boost', 'Agresividad', 'Core']
+      - name: stat_label
+        description: "Nombre de la estadística en español, para Power BI"
       - name: pct_all_matches
         description: "% de partidas válidas en que ganó el equipo con más de esta estadística"
         data_tests: [not_null]
