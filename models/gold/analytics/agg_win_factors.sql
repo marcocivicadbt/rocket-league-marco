@@ -1,21 +1,21 @@
 {% set stats = [
-    ('pos_time_behind_ball',        'Colocación'),
-    ('pos_time_defensive_third',    'Colocación'),
-    ('pos_time_offensive_third',    'Colocación'),
-    ('pos_time_most_back',          'Colocación'),
-    ('pos_avg_distance_to_mates',   'Colocación'),
-    ('pos_avg_distance_to_ball',    'Colocación'),
-    ('boost_count_collected_small', 'Colocación'),
-    ('mv_time_high_air',            'Mecánicas'),
-    ('mv_time_low_air',             'Mecánicas'),
-    ('mv_count_powerslide',         'Mecánicas'),
-    ('demo_inflicted',              'Agresividad'),
-    ('mv_time_supersonic_speed',    'Velocidad'),
-    ('mv_avg_speed',                'Velocidad'),
-    ('boost_amount_stolen',         'Boost'),
-    ('boost_time_zero_boost',       'Boost'),
-    ('core_saves',                  'Core'),
-    ('core_shots',                  'Core')
+    ('pos_time_behind_ball',        'Colocación',  'Tiempo detrás de la bola'),
+    ('pos_time_defensive_third',    'Colocación',  'Tiempo en tercio defensivo'),
+    ('pos_time_offensive_third',    'Colocación',  'Tiempo en tercio ofensivo'),
+    ('pos_time_most_back',          'Colocación',  'Tiempo como último hombre'),
+    ('pos_avg_distance_to_mates',   'Colocación',  'Distancia entre compañeros'),
+    ('pos_avg_distance_to_ball',    'Colocación',  'Distancia a la bola'),
+    ('boost_count_collected_small', 'Colocación',  'Pads pequeños recogidos'),
+    ('mv_time_high_air',            'Mecánicas',   'Tiempo en aire alto'),
+    ('mv_time_low_air',             'Mecánicas',   'Tiempo en aire bajo'),
+    ('mv_count_powerslide',         'Mecánicas',   'Derrapes'),
+    ('demo_inflicted',              'Agresividad', 'Demoliciones'),
+    ('mv_time_supersonic_speed',    'Velocidad',   'Tiempo en supersónico'),
+    ('mv_avg_speed',                'Velocidad',   'Velocidad media'),
+    ('boost_amount_stolen',         'Boost',       'Boost robado'),
+    ('boost_time_zero_boost',       'Boost',       'Tiempo sin boost'),
+    ('core_saves',                  'Core',        'Paradas'),
+    ('core_shots',                  'Core',        'Tiros')
 ] %}
 
 with equipos as (
@@ -49,6 +49,7 @@ final as (
     select
         '{{ s[0] }}' as stat_name,
         '{{ s[1] }}' as stat_group,
+        '{{ s[2] }}' as stat_label,
         round(avg(iff({{ s[0] }} = 0, null,
                       iff(({{ s[0] }} > 0) = gana_azul, 1, 0))) * 100, 1) as pct_all_matches,
         round(avg(iff(not is_close_match or {{ s[0] }} = 0, null,
